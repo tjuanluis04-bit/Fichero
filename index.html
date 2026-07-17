@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fichero — tus enlaces</title>
+<meta name="description" content="Guarda y organiza enlaces por categoría, con imagen y descripción.">
+<meta name="theme-color" content="#1B2A4A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-tab">01</span>
+    <h1>Fichero</h1>
+  </div>
+  <div class="search-wrap">
+    <input id="searchInput" type="search" placeholder="Buscar por título, descripción o dominio…" aria-label="Buscar enlaces">
+  </div>
+  <button id="openAddBtn" class="btn-primary">+ Nuevo enlace</button>
+</header>
+
+<div class="layout">
+  <nav class="drawer" id="categoryDrawer" aria-label="Categorías">
+    <div class="drawer-label">Categorías</div>
+    <ul id="categoryList" class="tab-list"></ul>
+    <button id="addCategoryBtn" class="tab-add">+ Añadir categoría</button>
+  </nav>
+
+  <main class="content">
+    <div class="content-head">
+      <h2 id="activeCategoryTitle">Todos los enlaces</h2>
+      <span id="countBadge" class="count-badge">0</span>
+    </div>
+    <div id="cardGrid" class="card-grid"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <p class="empty-title">Este fichero está vacío.</p>
+      <p class="empty-sub">Añade tu primer enlace para empezar a coleccionar.</p>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: agregar/editar enlace -->
+<div id="linkModal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h3 id="modalTitle">Nuevo enlace</h3>
+      <button id="closeModalBtn" class="icon-btn" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="linkForm">
+      <label>URL
+        <input type="url" id="fieldUrl" placeholder="https://ejemplo.com" required>
+      </label>
+      <label>Título
+        <input type="text" id="fieldTitle" placeholder="Nombre del sitio o página" required>
+      </label>
+      <label>Categoría
+        <div class="cat-select-row">
+          <select id="fieldCategory"></select>
+          <button type="button" id="newCatFromModal" class="icon-btn" title="Nueva categoría">+</button>
+        </div>
+      </label>
+      <label>Descripción
+        <textarea id="fieldDescription" rows="3" placeholder="¿Para qué sirve este enlace? (opcional)"></textarea>
+      </label>
+      <label>Imagen (URL, opcional)
+        <input type="url" id="fieldImage" placeholder="https://ejemplo.com/imagen.jpg">
+        <span class="field-hint">Si lo dejas vacío, se intentará generar una vista previa automática.</span>
+      </label>
+      <div class="modal-actions">
+        <button type="button" id="deleteLinkBtn" class="btn-danger" hidden>Eliminar</button>
+        <div class="spacer"></div>
+        <button type="button" id="cancelModalBtn" class="btn-ghost">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: nueva categoría -->
+<div id="categoryModal" class="modal-overlay" hidden>
+  <div class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="catModalTitle">
+    <div class="modal-head">
+      <h3 id="catModalTitle">Nueva categoría</h3>
+      <button id="closeCatModalBtn" class="icon-btn" aria-label="Cerrar">✕</button>
+    </div>
+    <form id="categoryForm">
+      <label>Nombre
+        <input type="text" id="fieldCategoryName" placeholder="Ej: Diseño, Recetas, Trabajo…" required maxlength="30">
+      </label>
+      <div class="modal-actions">
+        <div class="spacer"></div>
+        <button type="button" id="cancelCatModalBtn" class="btn-ghost">Cancelar</button>
+        <button type="submit" class="btn-primary">Crear</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
