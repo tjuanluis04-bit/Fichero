@@ -71,6 +71,11 @@ const categoryModal = document.getElementById("categoryModal");
 const categoryForm = document.getElementById("categoryForm");
 const fieldCategoryName = document.getElementById("fieldCategoryName");
 
+// Recuerda si el modal de categoría se abrió desde dentro del modal de enlace,
+// para no tener dos overlays a pantalla completa superpuestos a la vez
+// (eso puede bloquear los toques en algunos navegadores móviles).
+let categoryModalOpenedFromLink = false;
+
 // ---------- Render: categorías ----------
 function renderCategories() {
   categoryList.innerHTML = "";
@@ -292,13 +297,23 @@ linkModal.addEventListener("click", (e) => {
 });
 
 // ---------- Modal: categoría ----------
-function openCategoryModal() {
+function openCategoryModal(fromLink) {
+  categoryModalOpenedFromLink = !!fromLink && !linkModal.hidden;
+  if (categoryModalOpenedFromLink) {
+    // Solo un overlay a pantalla completa visible a la vez: ocultamos
+    // temporalmente el modal de enlace (sus datos no se pierden).
+    linkModal.hidden = true;
+  }
   categoryForm.reset();
   categoryModal.hidden = false;
   fieldCategoryName.focus();
 }
 function closeCategoryModal() {
   categoryModal.hidden = true;
+  if (categoryModalOpenedFromLink) {
+    linkModal.hidden = false;
+    categoryModalOpenedFromLink = false;
+  }
 }
 
 categoryForm.addEventListener("submit", (e) => {
@@ -309,14 +324,15 @@ categoryForm.addEventListener("submit", (e) => {
     state.categories.push(name);
     saveData();
   }
+  const cameFromLink = categoryModalOpenedFromLink;
   closeCategoryModal();
   renderAll();
   // si veníamos del formulario de enlace, seleccionamos la nueva categoría
-  if (!linkModal.hidden) fieldCategory.value = name;
+  if (cameFromLink) fieldCategory.value = name;
 });
 
-document.getElementById("addCategoryBtn").addEventListener("click", openCategoryModal);
-document.getElementById("newCatFromModal").addEventListener("click", openCategoryModal);
+document.getElementById("addCategoryBtn").addEventListener("click", () => openCategoryModal(false));
+document.getElementById("newCatFromModal").addEventListener("click", () => openCategoryModal(true));
 document.getElementById("closeCatModalBtn").addEventListener("click", closeCategoryModal);
 document.getElementById("cancelCatModalBtn").addEventListener("click", closeCategoryModal);
 categoryModal.addEventListener("click", (e) => {
