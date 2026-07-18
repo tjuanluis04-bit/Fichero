@@ -251,11 +251,19 @@ input,textarea,select,button{ font-family: -apple-system, BlinkMacSystemFont, "S
 
 /* Modal */
 .modal-overlay{
+  display:none;
   position:fixed; inset:0;
   background: rgba(27,42,74,0.45);
-  display:flex; align-items:center; justify-content:center;
   padding:20px;
   z-index:50;
+}
+/* Especificidad más alta que ".modal-overlay" a secas, para que gane
+   siempre que el atributo hidden NO esté presente. Así el atributo
+   hidden manda de verdad (antes "display:flex" lo ignoraba). */
+.modal-overlay:not([hidden]){
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .modal{
   background: var(--paper);
