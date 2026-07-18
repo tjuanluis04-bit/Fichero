@@ -1,4 +1,4 @@
-const CACHE_NAME = "fichero-cache-v1";
+const CACHE_NAME = "fichero-cache-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -28,23 +28,20 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // No cachear peticiones externas (favicons, imágenes de vista previa, etc.)
+  // No interceptar peticiones externas (favicons, vistas previas, etc.)
   if (new URL(req.url).origin !== self.location.origin) {
     return;
   }
 
+  // Red primero: asi cualquier actualizacion del sitio llega de inmediato.
+  // Si no hay conexion, se usa lo ultimo guardado en cache.
   event.respondWith(
-    caches.match(req).then((cached) => {
-      return (
-        cached ||
-        fetch(req)
-          .then((res) => {
-            const resClone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-            return res;
-          })
-          .catch(() => caches.match("./index.html"))
-      );
-    })
+    fetch(req)
+      .then((res) => {
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+        return res;
+      })
+      .catch(() => caches.match(req).then((cached) => cached || caches.match("./index.html")))
   );
 });
